@@ -1,0 +1,14 @@
+{
+  "name": "buoy_map",
+  "version": "1.0.0",
+  "description": "Websocket server for receiving and broadcasting buoy data along with a client for displaying said buoys on a map.",
+  "main": "ws_server/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Robin Markowitz",
+  "license": "ISC",
+  "dependencies": {
+    "ws": "^6.0.0"
+  }
+}
