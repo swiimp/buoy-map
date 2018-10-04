@@ -9,8 +9,8 @@ server.on('connection', (ws) => {
   ws.on('message', (data) => {
     const request = JSON.parse(data);
     if(BuoyHelpers[request.method]) {
-      BuoyHelpers[request.method](request.params);
-      ws.send(`{"jsonrpc":"2.0","result":"ok","id":"${request.id}"}`);
-    }
-  });
+      BuoyHelpers[request.method](request.params, (res) => {
+        ws.send(`{"jsonrpc":"2.0","result":"ok","id":"${request.id}"}`);
+      });
+    }});
 });
