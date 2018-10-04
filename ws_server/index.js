@@ -8,6 +8,9 @@ const server = new WebSocket.Server({
 server.on('connection', (ws) => {
   ws.on('message', (data) => {
     const request = JSON.parse(data);
-    BuoyHelpers[request.method](request.params);
+    if(BuoyHelpers[request.method]) {
+      BuoyHelpers[request.method](request.params);
+      ws.send(`{"jsonrpc":"2.0","result":"ok","id":"${request.id}"}`);
+    }
   });
 });
