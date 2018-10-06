@@ -4,31 +4,33 @@ const _latIndex = [];
 const _lonIndex = [];
 
 const addBuoy = (params, cb) => {
-  _buoys[params.name] = {
-    lat: params.lat,
-    lon: params.lon,
-    height: null,
-    period: null,
-    clients: [],
-  };
-  _latIndex.splice(_findIndex(params.lat, 'lat'), 0, {
-    name: params.name,
-    lat: params.lat,
-    lon: params.lon,
-  });
-  _lonIndex.splice(_findIndex(params.lon, 'lon'), 0, {
-    name: params.name,
-    lat: params.lat,
-    lon: params.lon,
-  });
-  for (let client in _clients) {
-    if (params.lat > _clients[client].bounds.south &&
+  if (_buoys[params.name] === undefined) {
+    _buoys[params.name] = {
+      lat: params.lat,
+      lon: params.lon,
+      height: null,
+      period: null,
+      clients: [],
+    };
+    _latIndex.splice(_findIndex(params.lat, 'lat'), 0, {
+      name: params.name,
+      lat: params.lat,
+      lon: params.lon,
+    });
+    _lonIndex.splice(_findIndex(params.lon, 'lon'), 0, {
+      name: params.name,
+      lat: params.lat,
+      lon: params.lon,
+    });
+    for (let client in _clients) {
+      if (params.lat > _clients[client].bounds.south &&
         params.lat < _clients[client].bounds.north &&
         params.lon > _clients[client].bounds.west &&
         params.lon < _clients[client].bounds.east) {
-      _buoys[params.name].clients.push(client);
-      _clients[client].buoys.push(params.name);
-      // Add client to cb payload
+          _buoys[params.name].clients.push(client);
+          _clients[client].buoys.push(params.name);
+          // Add client to cb payload
+      }
     }
   }
   cb();
@@ -114,6 +116,10 @@ const _findIndex = (target, metric) => {
 };
 
 module.exports = {
+  _buoys: _buoys,
+  _clients: _clients,
+  _latIndex: _latIndex,
+  _lonIndex: _lonIndex,
   addBuoy: addBuoy,
   updateBuoyData: updateBuoyData,
   subscribeToBuoys: subscribeToBuoys,
