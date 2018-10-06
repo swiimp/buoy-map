@@ -42,7 +42,6 @@ const updateBuoyData = (params, cb) => {
     _buoys[params.name].period = params.period;
     // Add clients to cb payload
   }
-  console.log(params.name, JSON.stringify(_buoys[params.name]));
   cb();
 };
 
@@ -53,27 +52,30 @@ const subscribeToBuoys = (params, cb, clientId) => {
       _clients[clientId].bounds.south !== params.south ||
       _clients[clientId].bounds.north !== params.north) {
     const results = [];
-    const isWithinBounds = (buoy) => buoy.lat > params.west && buoy.lat < params.east &&
-                                      buoy.lon > params.south && buoy.lon < params.north;
 
-    const addedBuoys = {};
-    let iLat = _findIndex(params.west, 'lat');
-    let iLon = _findIndex(params.south, 'lon');
-    while (_latIndex[iLat].lat < params.east && _lonIndex[iLon].lon < params.north) {
-      if (addedBuoys[_latIndex[iLat].name] !== true && isWithinBounds(_latIndex[iLat])) {
-        results.push(_latIndex[iLat].name);
-        _buoys[_latIndex[iLat].name].clients.push(clientId);
-        // Add buoy to cb payload
-        addedBuoys[_latIndex[iLat].name] = true;
+    if (_latIndex.length > 0) {
+      const isWithinBounds = (buoy) => buoy.lat > params.south && buoy.lat < params.north &&
+                                        buoy.lon > params.west && buoy.lon < params.east;
+      const addedBuoys = {};
+      let iLat = _findIndex(params.south, 'lat');
+      let iLon = _findIndex(params.west, 'lon');
+      while (iLat < _latIndex.length && iLon < _lonIndex.length &&
+              _latIndex[iLat].lat < params.north && _lonIndex[iLon].lon < params.east) {
+        if (addedBuoys[_latIndex[iLat].name] !== true && isWithinBounds(_latIndex[iLat])) {
+          results.push(_latIndex[iLat].name);
+          _buoys[_latIndex[iLat].name].clients.push(clientId);
+          // Add buoy to cb payload
+          addedBuoys[_latIndex[iLat].name] = true;
+        }
+        if (addedBuoys[_lonIndex[iLon].name] !== true && isWithinBounds(_lonIndex[iLon])) {
+          results.push(_lonIndex[iLon].name);
+          _buoys[_lonIndex[iLon].name].clients.push(clientId);
+          // Add buoy to cb payload
+          addedBuoys[_lonIndex[iLon].name] = true;
+        }
+        iLat += 1;
+        iLon += 1;
       }
-      if (addedBuoys[_lonIndex[iLon].name] !== true && isWithinBounds(_lonIndex[iLon])) {
-        results.push(_lonIndex[iLon].name);
-        _buoys[_lonIndex[iLon].name].clients.push(clientId);
-        // Add buoy to cb payload
-        addedBuoys[_lonIndex[iLon].name] = true;
-      }
-      iLat += 1;
-      iLon += 1;
     }
 
     _clients[clientId] = {
@@ -87,7 +89,7 @@ const subscribeToBuoys = (params, cb, clientId) => {
 const _findIndex = (target, metric) => {
   const index = metric === 'lat' ? _latIndex : _lonIndex;
 
-  if (index.length === 0 || index[0] > target) {
+  if (index.length === 0 || index[0][metric] > target) {
     return 0;
   } else if (index[index.length - 1][metric] < target) {
     return index.length;
@@ -96,7 +98,7 @@ const _findIndex = (target, metric) => {
   let first = 0;
   let last = index.length - 1;
   let mid = Math.floor((first + last) / 2);
-  while (first > last) {
+  while (first < last) {
     if (index[mid][metric] === target) {
       return mid;
     } else if (index[mid][metric] > target) {
