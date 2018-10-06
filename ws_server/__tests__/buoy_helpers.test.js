@@ -189,4 +189,165 @@ describe('updateBuoyData', () => {
   });
 });
 
-describe('subscribeToBuoys', () => {});
+describe('subscribeToBuoys', () => {
+  beforeEach(() => {
+    const test_param_1 = {
+      name: 'jest_buoy_0',
+      lat: 0,
+      lon: 0,
+    };
+    const test_param_2 = {
+      name: 'jest_buoy_1',
+      lat: 42,
+      lon: -42,
+    };
+    const test_param_3 = {
+      name: 'jest_buoy_2',
+      lat : 30,
+      lon : -30,
+    };
+    const test_param_4 = {
+      name: 'jest_buoy_3',
+      lat: -10,
+      lon: 100,
+    };
+
+    BuoyHelpers.addBuoy(test_param_1, () => {
+      BuoyHelpers.addBuoy(test_param_2, () => {
+        BuoyHelpers.addBuoy(test_param_3, () => {
+          BuoyHelpers.addBuoy(test_param_4, () => 0);
+        });
+      });
+    });
+  });
+
+  test('should add a new entry for new subscriptions', () => {
+    const params = {
+      south: 29,
+      west: -43,
+      north: 43,
+      east: -29,
+    };
+    const expectedClients = {
+      client_0: {
+        buoys: ['jest_buoy_2', 'jest_buoy_1'],
+        bounds: {
+          south: 29,
+          west: -43,
+          north: 43,
+          east: -29,
+        },
+      },
+    };
+
+    BuoyHelpers.subscribeToBuoys(params, () => {
+      expect(BuoyHelpers._clients).toEqual(expectedClients);
+    }, 'client_0');
+  });
+
+  test('should add the subscriptions to any appropriate buoys', () => {
+    const params = {
+      south: 29,
+      west: -43,
+      north: 43,
+      east: -29,
+    };
+    const expectedBuoys = {
+      jest_buoy_0: {
+        lat: 0,
+        lon: 0,
+        height: null,
+        period: null,
+        clients: [],
+      },
+      jest_buoy_1: {
+        lat: 42,
+        lon: -42,
+        height: null,
+        period: null,
+        clients: ['client_0'],
+      },
+      jest_buoy_2: {
+        lat: 30,
+        lon: -30,
+        height: null,
+        period: null,
+        clients: ['client_0'],
+      },
+      jest_buoy_3: {
+        lat: -10,
+        lon: 100,
+        height: null,
+        period: null,
+        clients: [],
+      },
+    };
+
+    BuoyHelpers.subscribeToBuoys(params, () => {
+      expect(BuoyHelpers._buoys).toEqual(expectedBuoys);
+    }, 'client_0');
+  });
+
+  test('should overwrite old subscriptions', () => {
+    const params_1 = {
+      south: -11,
+      west: -43,
+      north: 43,
+      east: 101,
+    };
+    const params_2 = {
+      south: 29,
+      west: -43,
+      north: 43,
+      east: -29,
+    };
+    const expectedBuoys = {
+      jest_buoy_0: {
+        lat: 0,
+        lon: 0,
+        height: null,
+        period: null,
+        clients: [],
+      },
+      jest_buoy_1: {
+        lat: 42,
+        lon: -42,
+        height: null,
+        period: null,
+        clients: ['client_0'],
+      },
+      jest_buoy_2: {
+        lat: 30,
+        lon: -30,
+        height: null,
+        period: null,
+        clients: ['client_0'],
+      },
+      jest_buoy_3: {
+        lat: -10,
+        lon: 100,
+        height: null,
+        period: null,
+        clients: [],
+      },
+    };
+    const expectedClients = {
+      client_0: {
+        buoys: ['jest_buoy_2', 'jest_buoy_1'],
+        bounds: {
+          south: 29,
+          west: -43,
+          north: 43,
+          east: -29,
+        },
+      },
+    };
+
+    BuoyHelpers.subscribeToBuoys(params_1, () => {
+      BuoyHelpers.subscribeToBuoys(params_2, () => {
+        expect(BuoyHelpers._clients).toEqual(expectedClients);
+        expect(BuoyHelpers._buoys).toEqual(expectedBuoys);
+      }, 'client_0');
+    }, 'client_0');
+  });
+});
