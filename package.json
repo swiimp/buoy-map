@@ -4,7 +4,7 @@
   "description": "Websocket server for receiving and broadcasting buoy data along with a client for displaying said buoys on a map.",
   "main": "ws_server/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --coverage"
   },
   "author": "Robin Markowitz",
   "license": "ISC",
