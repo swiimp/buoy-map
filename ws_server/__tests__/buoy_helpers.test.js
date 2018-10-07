@@ -26,7 +26,7 @@ describe('addBuoy', () => {
         lon: -42,
         height: null,
         period: null,
-        clients: [],
+        clients: {},
       },
     };
 
@@ -52,7 +52,7 @@ describe('addBuoy', () => {
         lon: -42,
         height: null,
         period: null,
-        clients: [],
+        clients: {},
       },
     };
 
@@ -80,19 +80,19 @@ describe('addBuoy', () => {
         lon: 0,
         height: null,
         period: null,
-        clients: [],
+        clients: {},
       },
       jest_buoy_1: {
         lat: 42,
         lon: -42,
         height: null,
         period: null,
-        clients: ['client_0'],
+        clients: { client_0: 'client_0' },
       },
     };
     const expectedClients = {
       client_0: {
-        buoys: ['jest_buoy_1'],
+        buoys: { jest_buoy_1: 'jest_buoy_1' },
         bounds: {
           west: -43,
           east: -41,
@@ -177,7 +177,7 @@ describe('updateBuoyData', () => {
         lon: 0,
         height: 42,
         period: 4.2,
-        clients: [],
+        clients: {},
       },
     };
 
@@ -230,7 +230,10 @@ describe('subscribeToBuoys', () => {
     };
     const expectedClients = {
       client_0: {
-        buoys: ['jest_buoy_2', 'jest_buoy_1'],
+        buoys: {
+          jest_buoy_2: 'jest_buoy_2',
+          jest_buoy_1: 'jest_buoy_1',
+        },
         bounds: {
           south: 29,
           west: -43,
@@ -258,28 +261,28 @@ describe('subscribeToBuoys', () => {
         lon: 0,
         height: null,
         period: null,
-        clients: [],
+        clients: {},
       },
       jest_buoy_1: {
         lat: 42,
         lon: -42,
         height: null,
         period: null,
-        clients: ['client_0'],
+        clients: { client_0: 'client_0' },
       },
       jest_buoy_2: {
         lat: 30,
         lon: -30,
         height: null,
         period: null,
-        clients: ['client_0'],
+        clients: { client_0: 'client_0' },
       },
       jest_buoy_3: {
         lat: -10,
         lon: 100,
         height: null,
         period: null,
-        clients: [],
+        clients: {},
       },
     };
 
@@ -307,33 +310,36 @@ describe('subscribeToBuoys', () => {
         lon: 0,
         height: null,
         period: null,
-        clients: [],
+        clients: {},
       },
       jest_buoy_1: {
         lat: 42,
         lon: -42,
         height: null,
         period: null,
-        clients: ['client_0'],
+        clients: { client_0: 'client_0' },
       },
       jest_buoy_2: {
         lat: 30,
         lon: -30,
         height: null,
         period: null,
-        clients: ['client_0'],
+        clients: { client_0: 'client_0' },
       },
       jest_buoy_3: {
         lat: -10,
         lon: 100,
         height: null,
         period: null,
-        clients: [],
+        clients: {},
       },
     };
     const expectedClients = {
       client_0: {
-        buoys: ['jest_buoy_2', 'jest_buoy_1'],
+        buoys: {
+          jest_buoy_2: 'jest_buoy_2',
+          jest_buoy_1: 'jest_buoy_1',
+        },
         bounds: {
           south: 29,
           west: -43,
