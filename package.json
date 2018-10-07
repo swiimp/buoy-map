@@ -4,7 +4,8 @@
   "description": "Websocket server for receiving and broadcasting buoy data along with a client for displaying said buoys on a map.",
   "main": "ws_server/index.js",
   "scripts": {
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "build": "webpack -d"
   },
   "author": "Robin Markowitz",
   "license": "ISC",
@@ -13,13 +14,16 @@
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
     "socket.io": "^2.1.1",
+    "socket.io-client": "^2.1.1",
     "ws": "^6.0.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.1.2",
+    "@babel/preset-react": "^7.0.0",
     "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.3",
     "babel-loader": "^8.0.4",
     "jest": "^23.6.0",
-    "webpack": "^4.20.2"
+    "webpack": "^4.20.2",
+    "webpack-cli": "^3.1.2"
   }
 }
