@@ -20,7 +20,7 @@ class BuoyMap extends React.Component {
     if (typeof window !== 'undefined') {
       this.socket = io();
       this.socket.on('notification', (buoyData) => {
-        console.dir('buoyNotification', buoyData);
+        console.log('buoyNotification', buoyData);
       });
     }
   }
@@ -45,8 +45,8 @@ class BuoyMap extends React.Component {
   }
 
   subscribeToBuoys() {
-    const rcp = {
-      jsonrpc: "2.0",
+    const rpc = {
+      jsonrpc: '2.0',
       method: 'subscribeToBuoys',
       params: {
         west: parseFloat(this.state.west),
@@ -55,7 +55,7 @@ class BuoyMap extends React.Component {
         north: parseFloat(this.state.north),
       },
     };
-    this.socket.send(JSON.stringify(rcp));
+    this.socket.send(JSON.stringify(rpc));
   }
 
   render() {
