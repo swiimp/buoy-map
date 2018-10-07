@@ -2,7 +2,7 @@ const WebSocket = require('ws');
 const BuoyHelpers = require('./buoy_helpers.js');
 
 const server = new WebSocket.Server({
-  port: 8080,
+  port: process.env.WS_PORT || 8080,
 });
 
 server.on('connection', (ws) => {
