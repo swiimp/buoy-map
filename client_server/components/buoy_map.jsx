@@ -8,15 +8,14 @@ class BuoyMap extends React.Component {
     super(props);
     this.state = {
       buoys: {},
-      bounds: {
-        west: null,
-        south: null,
-        east: null,
-        north: null,
-      },
+      west: '',
+      south: '',
+      east: '',
+      north: '',
     };
 
     this.handleChange = this.handleChange.bind(this);
+    this.subscribeToBuoys = this.subscribeToBuoys.bind(this);
 
     if (typeof window !== 'undefined') {
       this.socket = io();
@@ -27,28 +26,36 @@ class BuoyMap extends React.Component {
   }
 
   handleChange(e) {
-    console.dir(e);
     const boundMap = {
       'bound-west': 'west',
       'bound-south': 'south',
       'bound-east': 'east',
       'bound-north': 'north',
     };
-    const newBounds = {
-      west: this.state.bounds.west,
-      south: this.state.bounds.south,
-      east: this.state.bounds.east,
-      north: this.state.bounds.north,
-    };
-    newBounds[boundMap[e.target.className]] = e.target.val;
-    this.setState({ bounds: newBounds });
+    const newState = {};
+    newState[boundMap[e.target.className]] = e.target.value;
+    this.setState(newState);
   }
 
   handleEnter(e) {
     e.preventDefault();
     if (e.key === 'Enter') {
-      console.log('Enter pressed');
+      this.subscribeToBuoys();
     }
+  }
+
+  subscribeToBuoys() {
+    const rcp = {
+      jsonrpc: "2.0",
+      method: 'subscribeToBuoys',
+      params: {
+        west: parseFloat(this.state.west),
+        south: parseFloat(this.state.south),
+        east: parseFloat(this.state.east),
+        north: parseFloat(this.state.north),
+      },
+    };
+    this.socket.send(JSON.stringify(rcp));
   }
 
   render() {
@@ -58,28 +65,28 @@ class BuoyMap extends React.Component {
           <input
             className="bound-west"
             type="text"
-            value={this.state.bounds.west}
+            value={this.state.west}
             onChange={this.handleChange}
             onKeyUp={this.handleEnter}
           />
           <input
             className="bound-south"
             type="text"
-            value={this.state.bounds.south}
+            value={this.state.south}
             onChange={this.handleChange}
             onKeyUp={this.handleEnter}
           />
           <input
             className="bound-east"
             type="text"
-            value={this.state.bounds.east}
+            value={this.state.east}
             onChange={this.handleChange}
             onKeyUp={this.handleEnter}
           />
           <input
             className="bound-north"
             type="text"
-            value={this.state.bounds.north}
+            value={this.state.north}
             onChange={this.handleChange}
             onKeyUp={this.handleEnter}
           />
