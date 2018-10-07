@@ -46,40 +46,43 @@ const updateBuoyData = (params, cb) => {
 };
 
 const subscribeToBuoys = (params, cb, client) => {
-  if (_clients[clientId] === undefined ||
-      _clients[clientId].bounds.west !== params.west ||
-      _clients[clientId].bounds.east !== params.east ||
-      _clients[clientId].bounds.south !== params.south ||
-      _clients[clientId].bounds.north !== params.north) {
-    const results = {};
-
-    if (_latIndex.length > 0) {
-      const isWithinBounds = (buoy) => buoy.lat > params.south && buoy.lat < params.north &&
-                                        buoy.lon > params.west && buoy.lon < params.east;
-      let iLat = _findIndex(params.south, 'lat');
-      let iLon = _findIndex(params.west, 'lon');
-      while (iLat < _latIndex.length && iLon < _lonIndex.length &&
-              _latIndex[iLat].lat < params.north && _lonIndex[iLon].lon < params.east) {
-        if (results[_latIndex[iLat].name] === undefined && isWithinBounds(_latIndex[iLat])) {
-          results[_latIndex[iLat].name] = _latIndex[iLat].name;
-          _buoys[_latIndex[iLat].name].clients[client] = client;
-          // Add buoy to cb payload
+  const results = {};
+  const isWithinBounds = (buoy) => buoy.lat > params.south && buoy.lat < params.north &&
+                                    buoy.lon > params.west && buoy.lon < params.east;
+  if (_latIndex.length > 0) {
+    if (_clients[client]) {
+      for (let buoy in _clients[client].buoys) {
+        if (isWithinBounds(_buoys[buoy])) {
+          results[buoy] = buoy;
+        } else {
+          delete _buoys[buoy].clients[client];
         }
-        if (results[_lonIndex[iLon].name] === undefined && isWithinBounds(_lonIndex[iLon])) {
-          results[_lonIndex[iLon].name] = _lonIndex[iLon].name;
-          _buoys[_lonIndex[iLon].name].clients[client] = client;
-          // Add buoy to cb payload
-        }
-        iLat += 1;
-        iLon += 1;
       }
     }
-
-    _clients[clientId] = {
-      buoys: results,
-      bounds: params,
-    };
+    let iLat = _findIndex(params.south, 'lat');
+    let iLon = _findIndex(params.west, 'lon');
+    while (iLat < _latIndex.length && iLon < _lonIndex.length &&
+            _latIndex[iLat].lat < params.north && _lonIndex[iLon].lon < params.east) {
+      if (results[_latIndex[iLat].name] === undefined && isWithinBounds(_latIndex[iLat])) {
+        results[_latIndex[iLat].name] = _latIndex[iLat].name;
+        _buoys[_latIndex[iLat].name].clients[client] = client;
+        // Add buoy to cb payload
+      }
+      if (results[_lonIndex[iLon].name] === undefined && isWithinBounds(_lonIndex[iLon])) {
+        results[_lonIndex[iLon].name] = _lonIndex[iLon].name;
+        _buoys[_lonIndex[iLon].name].clients[client] = client;
+        // Add buoy to cb payload
+      }
+      iLat += 1;
+      iLon += 1;
+    }
   }
+
+  _clients[client] = {
+    buoys: results,
+    bounds: params,
+  };
+
   cb();
 };
 
