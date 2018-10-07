@@ -8,29 +8,34 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const port = process.env.APP_PORT || 3000;
 const wsHost = process.env.WS_HOST || `ws://localhost:8080`;
+const wsocks = {};
 
 app.use(express.static(path.join(__dirname, './public')));
 
 io.on('connection', (socket) => {
-  console.log(`io: Connection on ${socket.handshake.headers.referer}
-                from ${socket.handshake.address}`);
-  const ws = new WebSocket(wsHost);
+  wsocks[socket.id] = new WebSocket(wsHost);
+  wsocks[socket.id].on('error', (data) => {
+    console.log(data);
+  });
+  wsocks[socket.id].on('message', (data) => {
+    const response = JSON.parse(data);
+    if (response.id && response.error) {
+      console.log(data);
+    } else {
+      socket.emit('notification', data);
+    }
+  });
   socket.on('message', (data) => {
     const request = JSON.parse(data);
     request.clientId = socket.id;
     request.id = uuidv1();
-    ws.send(JSON.stringify(request));
+    wsocks[socket.id].send(JSON.stringify(request));
   });
-  ws.on('message', (data) => {
-    const response = JSON.parse(data);
-    if (response.id /* && there's an error */) {
-      console.log(data);
-    } else {
-      // Handle notification
-    }
+  socket.on('disconnect', () => {
+    wsocks[socket.id].terminate();
+    delete wsocks[socket.id];
   });
 });
-
 
 http.listen(port, () => {
   console.log(`App listening on port ${port}...`);

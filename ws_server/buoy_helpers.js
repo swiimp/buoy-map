@@ -118,6 +118,13 @@ const subscribeToBuoys = (params, cb, client, ws) => {
   cb(payload);
 };
 
+const terminateClient = (client) => {
+  for (let buoy in _clients[client].buoys) {
+    delete _buoys[buoy].clients[client];
+  }
+  delete _clients[client];
+};
+
 const _findIndex = (target, metric) => {
   const index = metric === 'lat' ? _latIndex : _lonIndex;
 
@@ -173,4 +180,5 @@ module.exports = {
   addBuoy: addBuoy,
   updateBuoyData: updateBuoyData,
   subscribeToBuoys: subscribeToBuoys,
+  terminateClient: terminateClient,
 };
