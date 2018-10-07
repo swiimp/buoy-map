@@ -119,10 +119,12 @@ const subscribeToBuoys = (params, cb, client, ws) => {
 };
 
 const terminateClient = (client) => {
-  for (let buoy in _clients[client].buoys) {
-    delete _buoys[buoy].clients[client];
+  if (_clients[client]) {
+    for (let buoy in _clients[client].buoys) {
+      delete _buoys[buoy].clients[client];
+    }
+    delete _clients[client];
   }
-  delete _clients[client];
 };
 
 const _findIndex = (target, metric) => {
