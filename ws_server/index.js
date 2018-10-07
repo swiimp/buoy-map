@@ -10,11 +10,16 @@ server.on('connection', (ws) => {
     const request = JSON.parse(data);
     if(BuoyHelpers[request.method]) {
       BuoyHelpers[request.method](request.params, (res) => {
-        // Check for error response
-          // Handle error
-        // Check for notifications
-          // Send all notifications
-        ws.send(`{"jsonrpc":"2.0","result":"ok","id":"${request.id}"}`);
-      }, request.clientId);
+        if (res.error) {
+          ws.send(res.error);
+        } else {
+          ws.send(`{"jsonrpc":"2.0","result":"ok","id":"${request.id}"}`);
+        }
+        for (let i = 0; i < res.notifications.length; i += 1) {
+          for (let j = 0; j < res.notifications[i].clients.length; j += 1) {
+            res.notifications[i].clients[j].send(res.notifications[i].body);
+          }
+        }
+      }, request.clientId, ws);
     }});
 });

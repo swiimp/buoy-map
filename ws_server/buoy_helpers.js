@@ -4,6 +4,11 @@ const _latIndex = [];
 const _lonIndex = [];
 
 const addBuoy = (params, cb) => {
+  const payload = {
+    error: null,
+    notifications: [],
+  };
+
   if (_buoys[params.name] === undefined) {
     _buoys[params.name] = {
       lat: params.lat,
@@ -22,6 +27,10 @@ const addBuoy = (params, cb) => {
       lat: params.lat,
       lon: params.lon,
     });
+    payload.notifications.push({
+      body: _generateNotification(params.name),
+      clients: [],
+    });
     for (let client in _clients) {
       if (params.lat > _clients[client].bounds.south &&
         params.lat < _clients[client].bounds.north &&
@@ -29,7 +38,7 @@ const addBuoy = (params, cb) => {
         params.lon < _clients[client].bounds.east) {
           _buoys[params.name].clients[client] = client;
           _clients[client].buoys[params.name] = params.name;
-          // Add client to cb payload
+          payload.notifications[0].clients.push(_clients[client].ws);
       }
     }
   }
@@ -37,16 +46,32 @@ const addBuoy = (params, cb) => {
 };
 
 const updateBuoyData = (params, cb) => {
+  const payload = {
+    error: null,
+    notifications: [],
+  };
+
   if (_buoys[params.name]) {
     _buoys[params.name].height = params.height;
     _buoys[params.name].period = params.period;
-    // Add clients to cb payload
+    payload.notifications.push({
+      body: _generateNotification(params.name),
+      clients: [],
+    });
+    for (let client in _buoys[params.name].clients) {
+      payload.notifications[0].clients.push(_clients[client].ws);
+    }
   }
-  cb();
+
+  cb(payload);
 };
 
-const subscribeToBuoys = (params, cb, client) => {
+const subscribeToBuoys = (params, cb, client, ws) => {
   const results = {};
+  const payload = {
+    error: null,
+    notifications: [],
+  };
   const isWithinBounds = (buoy) => buoy.lat > params.south && buoy.lat < params.north &&
                                     buoy.lon > params.west && buoy.lon < params.east;
   if (_latIndex.length > 0) {
@@ -66,12 +91,18 @@ const subscribeToBuoys = (params, cb, client) => {
       if (results[_latIndex[iLat].name] === undefined && isWithinBounds(_latIndex[iLat])) {
         results[_latIndex[iLat].name] = _latIndex[iLat].name;
         _buoys[_latIndex[iLat].name].clients[client] = client;
-        // Add buoy to cb payload
+        payload.notifications.push({
+          body: _generateNotification(_latIndex[iLat].name),
+          clients: [ws],
+        });
       }
       if (results[_lonIndex[iLon].name] === undefined && isWithinBounds(_lonIndex[iLon])) {
         results[_lonIndex[iLon].name] = _lonIndex[iLon].name;
         _buoys[_lonIndex[iLon].name].clients[client] = client;
-        // Add buoy to cb payload
+        payload.notifications.push({
+          body: _generateNotification(_lonIndex[iLon].name),
+          clients: [ws],
+        });
       }
       iLat += 1;
       iLon += 1;
@@ -81,9 +112,10 @@ const subscribeToBuoys = (params, cb, client) => {
   _clients[client] = {
     buoys: results,
     bounds: params,
+    ws: ws,
   };
 
-  cb();
+  cb(payload);
 };
 
 const _findIndex = (target, metric) => {
@@ -116,6 +148,22 @@ const _findIndex = (target, metric) => {
     }
   }
 };
+
+const _generateNotification = (buoy) => {
+  const notification = {
+    jsonrpc: '2.0',
+    method: 'buoyNotification',
+    params: {
+      name: buoy,
+      lat: _buoys[buoy].lat,
+      lon: _buoys[buoy].lon,
+      height: _buoys[buoy].height,
+      period: _buoys[buoy].period,
+    },
+  };
+
+  return JSON.stringify(notification);
+}
 
 module.exports = {
   _buoys: _buoys,
