@@ -1,0 +1,9 @@
+.buoy-map {
+  display: flex;
+  flex-flow: row;
+}
+
+.dev-controls {
+  display: flex;
+  flex-flow: column;
+}
