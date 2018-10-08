@@ -16,11 +16,14 @@ class BuoyMap extends React.Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.subscribeToBuoys = this.subscribeToBuoys.bind(this);
+    this.buoyNotification = this.buoyNotification.bind(this);
 
     if (typeof window !== 'undefined') {
       this.socket = io();
-      this.socket.on('notification', (buoyData) => {
-        console.log('buoyNotification', buoyData);
+      this.socket.on('notification', (data) => {
+        console.log(data);
+        const req = JSON.parse(data);
+        this.buoyNotification(req.params);
       });
     }
   }
@@ -56,6 +59,18 @@ class BuoyMap extends React.Component {
       },
     };
     this.socket.send(JSON.stringify(rpc));
+  }
+
+  buoyNotification(buoy) {
+    const newBuoys = Object.assign({}, this.state.buoys);
+    newBuoys[buoy.name] = {
+      name: buoy.name,
+      lat: buoy.lat,
+      lon: buoy.lon,
+      height: buoy.height,
+      period: buoy.period,
+    };
+    this.setState({ buoys: newBuoys });
   }
 
   render() {
