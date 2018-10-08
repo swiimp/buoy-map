@@ -18,10 +18,11 @@ io.on('connection', (socket) => {
     console.log(data);
   });
   wsocks[socket.id].on('message', (data) => {
+    console.log(typeof data, data);
     const response = JSON.parse(data);
     if (response.id && response.error) {
       console.log(data);
-    } else {
+    } else if (response.method === 'buoyNotification') {
       socket.emit('notification', data);
     }
   });
@@ -32,7 +33,7 @@ io.on('connection', (socket) => {
     wsocks[socket.id].send(JSON.stringify(request));
   });
   socket.on('disconnect', () => {
-    wsocks[socket.id].terminate();
+    wsocks[socket.id].close(1000);
     delete wsocks[socket.id];
   });
 });
