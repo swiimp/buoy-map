@@ -1,3 +1,4 @@
+require('dotenv').config();
 const webpack = require('webpack');
 const path = require('path');
 
@@ -10,13 +11,25 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.jsx?|\.js?/,
+        test: /\.jsx$|\.js$/,
+        exclude: [/node_modules/],
         use: [
           {
             loader: 'babel-loader',
           },
         ],
       },
+      {
+        test: /\.css$/,
+        use: [
+          {
+            loader: 'css-loader',
+          },
+        ],
+      },
     ],
   },
+  plugins: [
+    new webpack.EnvironmentPlugin(['MapboxAccessToken']),
+  ],
 };
