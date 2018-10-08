@@ -4,14 +4,12 @@ const BuoyHelpers = require('./buoy_helpers.js');
 const server = new WebSocket.Server({
   port: process.env.WS_PORT || 8080,
 });
-const clients = {};
 
 server.on('connection', (ws) => {
-  clients[ws] = null;
   ws.on('message', (data) => {
     const request = JSON.parse(data);
-    if (clients[ws] === null) {
-      clients[ws] = request.clientId;
+    if (!ws.id) {
+      ws.clientId = request.clientId;
     }
     if(BuoyHelpers[request.method]) {
       BuoyHelpers[request.method](request.params, (res) => {
@@ -31,10 +29,8 @@ server.on('connection', (ws) => {
         }
       }, request.clientId, ws);
     }});
-  ws.on('close', () => {
-    if (typeof clients[ws] !== 'undefined' && clients[ws] !== null) {
-      BuoyHelpers.terminateClient(clients[ws]);
-    }
-    delete clients[ws];
+  ws.on('close', (code, message) => {
+    console.log('WebSocket closed:', ws.clientId, code, message);
+    BuoyHelpers.terminateClient(ws.clientId);
   });
 });
