@@ -51,7 +51,9 @@ const updateBuoyData = (params, cb) => {
     notifications: [],
   };
 
-  if (_buoys[params.name]) {
+  if (_buoys[params.name] &&
+      (_buoys[params.name].height !== params.height ||
+       _buoys[params.name].period !== params.period)) {
     _buoys[params.name].height = params.height;
     _buoys[params.name].period = params.period;
     payload.notifications.push({
@@ -59,6 +61,7 @@ const updateBuoyData = (params, cb) => {
       clients: [],
     });
     for (let client in _buoys[params.name].clients) {
+      console.log('Update queued for', client);
       payload.notifications[0].clients.push(_clients[client].ws);
     }
   }
