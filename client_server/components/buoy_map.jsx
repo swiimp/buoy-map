@@ -2,6 +2,7 @@ import React from 'react';
 import io from 'socket.io-client';
 
 import Map from './map.jsx';
+import '../css/main.css';
 
 class BuoyMap extends React.Component {
   constructor(props) {

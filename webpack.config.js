@@ -23,6 +23,9 @@ module.exports = {
         test: /\.css$/,
         use: [
           {
+            loader: 'style-loader',
+          },
+          {
             loader: 'css-loader',
           },
         ],
@@ -30,6 +33,8 @@ module.exports = {
     ],
   },
   plugins: [
-    new webpack.EnvironmentPlugin(['MapboxAccessToken']),
+    new webpack.DefinePlugin({
+      'MapboxAccessToken': JSON.stringify(process.env.MapboxAccessToken),
+    }),
   ],
 };
