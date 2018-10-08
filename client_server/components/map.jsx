@@ -1,3 +1,5 @@
+import React from 'react';
+
 const Map = (props) => {
   const getCondition = (height, period) => {
     if (height < 4 || period < 4) {
