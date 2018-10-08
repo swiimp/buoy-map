@@ -17,6 +17,7 @@ class BuoyMap extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.subscribeToBuoys = this.subscribeToBuoys.bind(this);
     this.buoyNotification = this.buoyNotification.bind(this);
+    this.createDump = this.createDump.bind(this);
 
     if (typeof window !== 'undefined') {
       this.socket = io();
@@ -73,6 +74,15 @@ class BuoyMap extends React.Component {
     this.setState({ buoys: newBuoys });
   }
 
+  createDump() {
+    const rpc = {
+      jsonrpc: '2.0',
+      method: 'createDump',
+      params: {},
+    };
+    this.socket.send(JSON.stringify(rpc));
+  }
+
   render() {
     return (
       <div className="buoy-map">
@@ -106,6 +116,7 @@ class BuoyMap extends React.Component {
             onKeyUp={this.handleEnter}
           />
           <button className="bound-subscribe" onClick={this.subscribeToBuoys}>Submit</button>
+          <button className="dev-dump" onClick={this.createDump}>Dump Vars</button>
         </div>
         <Map buoys={this.state.buoys}/>
       </div>

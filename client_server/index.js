@@ -31,6 +31,9 @@ io.on('connection', (socket) => {
     request.clientId = socket.id;
     request.id = uuidv1();
     wsocks[socket.id].send(JSON.stringify(request));
+    if (request.method === 'createDump') {
+      console.log(wsocks);
+    }
   });
   socket.on('disconnect', () => {
     wsocks[socket.id].close(1000);
