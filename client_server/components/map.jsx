@@ -3,6 +3,7 @@ import ReactMapGL from 'react-map-gl';
 import {defaultStyle} from '../utils/default_style.js'
 import 'mapbox-gl/dist/mapbox-gl.css';
 
+import BuoyOverlay from './buoy_overlay.jsx'
 import CanvasOverlay from 'react-map-gl/src/overlays/canvas-overlay.js'
 
 let animation = null;
@@ -14,8 +15,8 @@ class Map extends React.Component {
       mapStyle: defaultStyle,
       width: 600,
       height: 400,
-      latitude: 37.7577,
-      longitude: -122.4376,
+      latitude: 34.454,
+      longitude: -120.783,
       zoom: 8,
       isDrawing: false,
       startCorner: null,
@@ -30,12 +31,13 @@ class Map extends React.Component {
 
   handleClick(e) {
     if (this.state.isDrawing) {
-      window.cancelAnimationFrame(animation);
       this.setState({ isDrawing: false });
+      window.cancelAnimationFrame(animation);
+      this.props.setBounds(this.state.startCorner, this.state.endCorner);
     } else {
       this.setState({
-        startCorner: e.lngLat,
         isDrawing: true,
+        startCorner: e.lngLat,
       });
     }
   }
@@ -47,27 +49,40 @@ class Map extends React.Component {
   }
 
   drawBox(params) {
-    const context = params.ctx;
     const rectStart = params.project(this.state.startCorner);
     const rectEnd = params.project(this.state.endCorner);
     const rectWidth = rectEnd[0] - rectStart[0];
     const rectHeight = rectEnd[1] - rectStart[1];
 
-    context.clearRect(0, 0, params.width, params.height);
-    context.globalCompositeOperation = 'source-over';
-    context.fillStyle = 'rgba(0, 255, 0, 0.1)';
-    context.fillRect(rectStart[0], rectStart[1], rectWidth, rectHeight);
+    params.ctx.clearRect(0, 0, params.width, params.height);
+    params.ctx.globalCompositeOperation = 'source-over';
+    params.ctx.fillStyle = 'rgba(0, 255, 0, 0.25)';
+    params.ctx.strokeStyle = 'rgb(0, 255, 0)';
+    params.ctx.fillRect(rectStart[0], rectStart[1], rectWidth, rectHeight);
   }
 
-  addOverlay() {
+  addOverlay(buoys, startCorner, endCorner) {
+    console.log(arguments);
     const childNodes = [];
 
-    if (this.state.endCorner && this.state.startCorner) {
+    if (endCorner && startCorner) {
       childNodes.push(
-        <CanvasOverlay redraw={this.drawBox}/>
+        <CanvasOverlay
+          id='box'
+          redraw={this.drawBox}
+        />
+      );
+    }
+    if (Object.keys(buoys).length > 0) {
+      childNodes.push(
+        <BuoyOverlay
+          id='buoys'
+          buoys={buoys}
+        />
       );
     }
 
+    console.log(childNodes);
     return childNodes;
   }
 
@@ -93,20 +108,10 @@ class Map extends React.Component {
         onClick={this.handleClick}
         onHover={this.handleHover}
         mapboxApiAccessToken={MapboxAccessToken}>
-        {this.addOverlay()}
+        {this.addOverlay(this.props.buoys, this.state.startCorner, this.state.endCorner)}
       </ReactMapGL>
     );
   }
 }
-
-//   const getCondition = (height, period) => {
-//     if (height < 4 || period < 4) {
-//       return 'Poor';
-//     } else if (height < 12 || height < 12) {
-//       return 'Fair';
-//     } else {
-//       return 'Good';
-//     }
-//   }
 
 export default Map;

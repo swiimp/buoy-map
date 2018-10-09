@@ -19,15 +19,14 @@ class BuoyMap extends React.Component {
     this.subscribeToBuoys = this.subscribeToBuoys.bind(this);
     this.buoyNotification = this.buoyNotification.bind(this);
     this.createDump = this.createDump.bind(this);
+    this.setBounds = this.setBounds.bind(this);
 
-    if (typeof window !== 'undefined') {
-      this.socket = io();
-      this.socket.on('notification', (data) => {
-        console.log(data);
-        const req = JSON.parse(data);
-        this.buoyNotification(req.params);
-      });
-    }
+    this.socket = io();
+    this.socket.on('notification', (data) => {
+      console.log(data);
+      const req = JSON.parse(data);
+      this.buoyNotification(req.params);
+    });
   }
 
   handleChange(e) {
@@ -84,6 +83,15 @@ class BuoyMap extends React.Component {
     this.socket.send(JSON.stringify(rpc));
   }
 
+  setBounds(startCorner, endCorner) {
+    this.setState({
+      west: Math.min(startCorner[0], endCorner[0]),
+      south: Math.min(startCorner[1], endCorner[1]),
+      east: Math.max(startCorner[0], endCorner[0]),
+      north: Math.max(startCorner[1], endCorner[1]),
+    });
+  }
+
   render() {
     return (
       <div className="buoy-map">
@@ -119,7 +127,10 @@ class BuoyMap extends React.Component {
           <button className="bound-subscribe" onClick={this.subscribeToBuoys}>Submit</button>
           <button className="dev-dump" onClick={this.createDump}>Dump Vars</button>
         </div>
-        <Map buoys={this.state.buoys}/>
+        <Map
+          buoys={this.state.buoys}
+          setBounds={this.setBounds}
+        />
       </div>
     );
   }
