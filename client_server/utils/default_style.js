@@ -862,6 +862,6 @@ export const defaultStyle = {
                 "text-halo-blur": 1
             },
             "source-layer": "country_label"
-        }
+        },
     ]
 }
