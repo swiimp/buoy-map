@@ -20,15 +20,24 @@ class BuoyOverlay extends React.Component {
       }
     };
 
-    const writeInfo = (buoy, condition, ctx, center) => {
-      let offset = -36;
+    const writeInfo = (buoy, condition, ctx, center, radius) => {
+      const cornerX = center[0] + 4 + radius / Math.sqrt(2);
+      const cornerY = center[1] - 2 + radius / Math.sqrt(2);
+      const conText = `Condition: ${condition}`;
+      const boxWidth = buoy.name.length + 6 > 15 ?
+                        ctx.measureText(`Name: ${buoy.name}`).width :
+                        ctx.measureText(conText).width;
+      let yOffset = -84;
+      ctx.fillStyle = 'white';
+      ctx.fillRect(cornerX - 1, cornerY + yOffset, boxWidth + 2, -yOffset + 1);
+      ctx.fillStyle = 'black';
       for (let prop in buoy) {
         const field = prop.charAt(0).toUpperCase() + prop.slice(1);
-        offset += 12;
-        ctx.fillText(`${field}: ${buoy[prop]}`, center[0] + 12, center[1] + offset);
+        yOffset += 12;
+        ctx.fillText(`${field}: ${buoy[prop]}`, cornerX, cornerY + yOffset);
       }
-      offset += 12;
-      ctx.fillText(`Condition: ${condition}`, center[0] + 12, center[1] + offset);
+      yOffset += 12;
+      ctx.fillText(conText, cornerX, cornerY + yOffset);
     };
 
     params.ctx.clearRect(0, 0, params.width, params.height);
@@ -36,14 +45,16 @@ class BuoyOverlay extends React.Component {
       const buoy = this.props.buoys[buoyName];
       const center = params.project([buoy.lon, buoy.lat]);
       const condition = getCondition(buoy.height, buoy.period);
+      const radius = this.props.radius;
 
       params.ctx.globalCompositeOperation = 'source-over';
       params.ctx.fillStyle = condition[1];
       params.ctx.beginPath();
-      params.ctx.arc(center[0], center[1], 10, 0, 2 * Math.PI, false);
+      params.ctx.arc(center[0], center[1], radius, 0, 2 * Math.PI, false);
       params.ctx.fill();
-      params.ctx.fillStyle = 'black';
-      writeInfo(buoy, condition[0], params.ctx, center);
+      if (!this.props.isMouseOver || this.props.isMouseOver(center, radius, params.project)) {
+        writeInfo(buoy, condition[0], params.ctx, center, radius);
+      }
     }
   }
 

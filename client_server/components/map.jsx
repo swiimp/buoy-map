@@ -19,6 +19,7 @@ class Map extends React.Component {
       longitude: -120.783,
       zoom: 8,
       isDrawing: false,
+      mousePos: null,
       startCorner: null,
       endCorner: null,
     };
@@ -44,7 +45,13 @@ class Map extends React.Component {
 
   handleHover(e) {
     if (this.state.isDrawing) {
-      animation = window.requestAnimationFrame(() => this.setState({ endCorner: e.lngLat }));
+      animation = window.requestAnimationFrame(() =>
+        this.setState({
+          mousePos: e.lngLat,
+          endCorner: e.lngLat,
+        }));
+    } else {
+      this.setState({ mousePos: e.lngLat });
     }
   }
 
@@ -77,6 +84,11 @@ class Map extends React.Component {
         <BuoyOverlay
           id='buoys'
           buoys={buoys}
+          radius={10}
+          isMouseOver={(center, radius, project) => {
+            const mousePosPx = project(this.state.mousePos);
+            return Math.hypot(center[0] - mousePosPx[0], center[1] - mousePosPx[1]) <= radius;
+          }}
         />
       );
     }
