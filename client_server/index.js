@@ -14,12 +14,12 @@ const wsocks = {};
 app.use(express.static(path.join(__dirname, './public')));
 
 io.on('connection', (socket) => {
+  console.log(`Client connected: ${socket.id}`);
   wsocks[socket.id] = new WebSocket(wsHost);
   wsocks[socket.id].on('error', (data) => {
     console.log(data);
   });
   wsocks[socket.id].on('message', (data) => {
-    console.log(typeof data, data);
     const response = JSON.parse(data);
     if (response.id && response.error) {
       console.log(data);
@@ -37,6 +37,7 @@ io.on('connection', (socket) => {
     }
   });
   socket.on('disconnect', () => {
+    console.log(`Client disconnected: ${socket.id}`);
     wsocks[socket.id].close(1000);
     delete wsocks[socket.id];
   });

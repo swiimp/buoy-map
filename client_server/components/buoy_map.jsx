@@ -23,7 +23,6 @@ class BuoyMap extends React.Component {
 
     this.socket = io();
     this.socket.on('notification', (data) => {
-      console.log(data);
       const req = JSON.parse(data);
       this.buoyNotification(req.params);
     });

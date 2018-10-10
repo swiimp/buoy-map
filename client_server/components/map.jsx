@@ -62,7 +62,6 @@ class Map extends React.Component {
   }
 
   addOverlay(buoys, startCorner, endCorner) {
-    console.log(arguments);
     const childNodes = [];
 
     if (endCorner && startCorner) {
@@ -82,7 +81,6 @@ class Map extends React.Component {
       );
     }
 
-    console.log(childNodes);
     return childNodes;
   }
 
