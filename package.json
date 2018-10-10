@@ -9,6 +9,14 @@
   },
   "author": "Robin Markowitz",
   "license": "ISC",
+  "jest": {
+    "setupFiles": [
+      "./test/jestsetup.js"
+    ],
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ]
+  },
   "dependencies": {
     "dotenv": "^6.0.0",
     "express": "^4.16.3",
@@ -27,6 +35,9 @@
     "babel-cli": "^6.26.0",
     "babel-loader": "^8.0.4",
     "css-loader": "^1.0.0",
+    "enzyme": "^3.7.0",
+    "enzyme-adapter-react-16": "^1.6.0",
+    "enzyme-to-json": "^3.3.4",
     "jest": "^23.6.0",
     "webpack": "^4.20.2",
     "webpack-cli": "^3.1.2"
