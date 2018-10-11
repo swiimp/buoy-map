@@ -1,15 +1,16 @@
 import React from 'react';
 import ReactMapGL from 'react-map-gl';
-import {defaultStyle} from '../utils/default_style.js'
-import 'mapbox-gl/dist/mapbox-gl.css';
+import debounce from 'lodash/debounce';
 
+import {defaultStyle} from '../utils/default_style.js'
 import BuoyOverlay from './buoy_overlay.jsx'
+import 'mapbox-gl/dist/mapbox-gl.css';
 
 class Map extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      mapStyle: defaultStyle,
+      // mapStyle: defaultStyle,
       width: 600,
       height: 400,
       latitude: 34.454,
@@ -18,8 +19,12 @@ class Map extends React.Component {
       mousePos: null,
     };
 
+    this.updateSubscription = debounce(() =>
+      this.props.setBounds(this.mapRef.getMap().getBounds()), 500);
+
     this.handleHover = this.handleHover.bind(this);
     this.addOverlay = this.addOverlay.bind(this);
+    this.updateSubscription = this.updateSubscription.bind(this);
   }
 
   componentDidMount() {
@@ -57,7 +62,7 @@ class Map extends React.Component {
     return (
       <ReactMapGL
         ref={(map) => this.mapRef = map}
-        mapStyle={this.state.mapStyle}
+        // mapStyle={this.state.mapStyle}
         width={this.state.width}
         height={this.state.height}
         latitude={this.state.latitude}
@@ -71,7 +76,7 @@ class Map extends React.Component {
             latitude: viewport.latitude,
             longitude: viewport.longitude,
             zoom: viewport.zoom,
-          })
+          }, this.updateSubscription)
         }
         onHover={this.handleHover}
         mapboxApiAccessToken={MapboxAccessToken}>

@@ -53,12 +53,17 @@ class BuoyMap extends React.Component {
   }
 
   setBounds(bounds) {
-    this.setState({
-      west: bounds.getWest(),
-      south: bounds.getSouth(),
-      east: bounds.getEast(),
-      north: bounds.getNorth(),
-    }, () => this.subscribeToBuoys());
+    if (bounds.getWest() < this.state.west ||
+        bounds.getSouth() < this.state.south ||
+        bounds.getEast() > this.state.east ||
+        bounds.getNorth() > this.state.north) {
+      this.setState({
+        west: bounds.getWest() - this.props.lonPrecache,
+        south: bounds.getSouth() - this.props.latPrecache,
+        east: bounds.getEast() + this.props.lonPrecache,
+        north: bounds.getNorth() + this.props.lonPrecache,
+      }, () => this.subscribeToBuoys());
+    }
   }
 
   render() {
