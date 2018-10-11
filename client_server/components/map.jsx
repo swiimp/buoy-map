@@ -75,8 +75,8 @@ class Map extends React.Component {
     if (isHowToOpen) {
       return (
         <Popup
-          latitude={34.454}
-          longitude={-120.783}
+          latitude={this.state.latitude}
+          longitude={this.state.longitude}
           tipSize={0}
           onClose={() => this.setState({ isHowToOpen: false })}
           >
