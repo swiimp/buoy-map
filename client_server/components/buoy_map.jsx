@@ -52,12 +52,12 @@ class BuoyMap extends React.Component {
     this.setState({ buoys: newBuoys });
   }
 
-  setBounds(startCorner, endCorner) {
+  setBounds(bounds) {
     this.setState({
-      west: Math.min(startCorner[0], endCorner[0]),
-      south: Math.min(startCorner[1], endCorner[1]),
-      east: Math.max(startCorner[0], endCorner[0]),
-      north: Math.max(startCorner[1], endCorner[1]),
+      west: bounds.getWest(),
+      south: bounds.getSouth(),
+      east: bounds.getEast(),
+      north: bounds.getNorth(),
     }, () => this.subscribeToBuoys());
   }
 
