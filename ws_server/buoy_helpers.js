@@ -177,14 +177,6 @@ const _generateNotification = (buoy) => {
   return JSON.stringify(notification);
 }
 
-const _DEV_createDump = (params, cb) => {
-  console.log(_buoys);
-  console.log(_clients);
-  console.log(_latIndex);
-  console.log(_lonIndex);
-  cb();
-}
-
 module.exports = {
   _buoys: _buoys,
   _clients: _clients,
@@ -194,5 +186,4 @@ module.exports = {
   updateBuoyData: updateBuoyData,
   subscribeToBuoys: subscribeToBuoys,
   terminateClient: terminateClient,
-  createDump: _DEV_createDump,
 };
