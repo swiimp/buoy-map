@@ -18,7 +18,6 @@ class BuoyMap extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.subscribeToBuoys = this.subscribeToBuoys.bind(this);
     this.buoyNotification = this.buoyNotification.bind(this);
-    this.createDump = this.createDump.bind(this);
     this.setBounds = this.setBounds.bind(this);
 
     this.socket = io();
@@ -29,14 +28,8 @@ class BuoyMap extends React.Component {
   }
 
   handleChange(e) {
-    const boundMap = {
-      'bound-west': 'west',
-      'bound-south': 'south',
-      'bound-east': 'east',
-      'bound-north': 'north',
-    };
     const newState = {};
-    newState[boundMap[e.target.className]] = e.target.value;
+    newState[e.target.id] = e.target.value;
     this.setState(newState);
   }
 
@@ -73,15 +66,6 @@ class BuoyMap extends React.Component {
     this.setState({ buoys: newBuoys });
   }
 
-  createDump() {
-    const rpc = {
-      jsonrpc: '2.0',
-      method: 'createDump',
-      params: {},
-    };
-    this.socket.send(JSON.stringify(rpc));
-  }
-
   setBounds(startCorner, endCorner) {
     this.setState({
       west: Math.min(startCorner[0], endCorner[0]),
@@ -94,42 +78,53 @@ class BuoyMap extends React.Component {
   render() {
     return (
       <div className="buoy-map">
-        <div className="dev-controls">
-          <input
-            className="bound-west"
-            type="text"
-            value={this.state.west}
-            onChange={this.handleChange}
-            onKeyUp={this.handleEnter}
-          />
-          <input
-            className="bound-south"
-            type="text"
-            value={this.state.south}
-            onChange={this.handleChange}
-            onKeyUp={this.handleEnter}
-          />
-          <input
-            className="bound-east"
-            type="text"
-            value={this.state.east}
-            onChange={this.handleChange}
-            onKeyUp={this.handleEnter}
-          />
-          <input
-            className="bound-north"
-            type="text"
-            value={this.state.north}
-            onChange={this.handleChange}
-            onKeyUp={this.handleEnter}
-          />
-          <button className="bound-subscribe" onClick={this.subscribeToBuoys}>Submit</button>
-          <button className="dev-dump" onClick={this.createDump}>Dump Vars</button>
-        </div>
         <Map
           buoys={this.state.buoys}
           setBounds={this.setBounds}
         />
+        <form className="map-controls">
+          <div className="map-controls-col">
+            <label for="west">West</label>
+            <input
+            id="west"
+            className="latlon-input"
+            type="text"
+            value={this.state.west}
+            onChange={this.handleChange}
+            onKeyUp={this.handleEnter}
+            />
+            <label for="east">East</label>
+            <input
+            id="east"
+            className="latlon-input"
+            type="text"
+            value={this.state.east}
+            onChange={this.handleChange}
+            onKeyUp={this.handleEnter}
+            />
+          </div>
+          <div className="map-controls-col">
+            <label for="south">South</label>
+            <input
+            id="south"
+            className="latlon-input"
+            type="text"
+            value={this.state.south}
+            onChange={this.handleChange}
+            onKeyUp={this.handleEnter}
+            />
+            <label for="north">North</label>
+            <input
+            id="north"
+            className="latlon-input"
+            type="text"
+            value={this.state.north}
+            onChange={this.handleChange}
+            onKeyUp={this.handleEnter}
+            />
+          </div>
+        </form>
+        <button className="bound-subscribe" onClick={this.subscribeToBuoys}>Submit</button>
       </div>
     );
   }
