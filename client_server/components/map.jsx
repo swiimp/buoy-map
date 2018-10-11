@@ -22,6 +22,10 @@ class Map extends React.Component {
     this.addOverlay = this.addOverlay.bind(this);
   }
 
+  componentDidMount() {
+    this.props.setBounds(this.mapRef.getMap().getBounds());
+  }
+
   handleHover(e) {
     this.setState({ mousePos: e.lngLat });
   }
@@ -36,8 +40,11 @@ class Map extends React.Component {
           buoys={buoys}
           radius={10}
           isMouseOver={(center, radius, project) => {
-            const mousePosPx = project(this.state.mousePos);
-            return Math.hypot(center[0] - mousePosPx[0], center[1] - mousePosPx[1]) <= radius;
+            if (this.state.mousePos) {
+              const mousePosPx = project(this.state.mousePos);
+              return Math.hypot(center[0] - mousePosPx[0], center[1] - mousePosPx[1]) <= radius;
+            }
+            return false;
           }}
         />
       );
@@ -49,6 +56,7 @@ class Map extends React.Component {
   render() {
     return (
       <ReactMapGL
+        ref={(map) => this.mapRef = map}
         mapStyle={this.state.mapStyle}
         width={this.state.width}
         height={this.state.height}
