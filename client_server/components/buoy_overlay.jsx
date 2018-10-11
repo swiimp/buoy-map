@@ -1,6 +1,6 @@
 import React from 'react';
 
-import CanvasOverlay from 'react-map-gl/src/overlays/canvas-overlay.js'
+import CanvasOverlay from 'react-map-gl/src/overlays/canvas-overlay.js';
 
 class BuoyOverlay extends React.Component {
   constructor(props) {
@@ -27,6 +27,7 @@ class BuoyOverlay extends React.Component {
       const boxWidth = buoy.name.length + 6 > 15 ?
                         ctx.measureText(`Name: ${buoy.name}`).width :
                         ctx.measureText(conText).width;
+
       let yOffset = -84;
       ctx.fillStyle = 'white';
       ctx.fillRect(cornerX - 1, cornerY + yOffset, boxWidth + 2, -yOffset + 1);
