@@ -23,16 +23,30 @@ class Map extends React.Component {
       this.props.setBounds(this.mapRef.getMap().getBounds()), 500);
 
     this.handleHover = this.handleHover.bind(this);
+    this.resize = this.resize.bind(this);
     this.addOverlay = this.addOverlay.bind(this);
     this.updateSubscription = this.updateSubscription.bind(this);
   }
 
   componentDidMount() {
     this.props.setBounds(this.mapRef.getMap().getBounds());
+    window.addEventListener('resize', this.resize);
+    this.resize();
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.resize);
   }
 
   handleHover(e) {
     this.setState({ mousePos: e.lngLat });
+  }
+
+  resize() {
+    this.setState({
+      width: window.innerWidth || 600,
+      height: window.innerHeight || 400,
+    });
   }
 
   addOverlay(buoys, startCorner, endCorner) {
