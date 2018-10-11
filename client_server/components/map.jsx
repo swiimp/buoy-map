@@ -1,8 +1,7 @@
 import React from 'react';
-import ReactMapGL from 'react-map-gl';
+import ReactMapGL, {Popup} from 'react-map-gl';
 import debounce from 'lodash/debounce';
 
-import {defaultStyle} from '../utils/default_style.js'
 import BuoyOverlay from './buoy_overlay.jsx'
 import 'mapbox-gl/dist/mapbox-gl.css';
 
@@ -10,22 +9,22 @@ class Map extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      // mapStyle: defaultStyle,
       width: 600,
       height: 400,
       latitude: 34.454,
       longitude: -120.783,
       zoom: 8,
       mousePos: null,
+      isHowToOpen: true,
     };
 
     this.updateSubscription = debounce(() =>
-      this.props.setBounds(this.mapRef.getMap().getBounds()), 500);
+      this.props.setBounds(this.mapRef.getMap().getBounds()), 500).bind(this);
 
     this.handleHover = this.handleHover.bind(this);
     this.resize = this.resize.bind(this);
     this.addOverlay = this.addOverlay.bind(this);
-    this.updateSubscription = this.updateSubscription.bind(this);
+    this.addPopup = this.addPopup.bind(this);
   }
 
   componentDidMount() {
@@ -72,11 +71,31 @@ class Map extends React.Component {
     return childNodes;
   }
 
+  addPopup(isHowToOpen) {
+    if (isHowToOpen) {
+      return (
+        <Popup
+          latitude={34.454}
+          longitude={-120.783}
+          tipSize={0}
+          onClose={() => this.setState({ isHowToOpen: false })}
+          >
+          <p>
+            Basic Controls:<br/>
+            Left-click + drag: Pan viewport<br/>
+            Scroll up/down: Zoom in/out<br/><br/>
+            Hover over points to get more info.<br/>
+            (Click dialog to close)
+          </p>
+        </Popup>
+      );
+    }
+  }
+
   render() {
     return (
       <ReactMapGL
         ref={(map) => this.mapRef = map}
-        // mapStyle={this.state.mapStyle}
         width={this.state.width}
         height={this.state.height}
         latitude={this.state.latitude}
@@ -95,6 +114,7 @@ class Map extends React.Component {
         onHover={this.handleHover}
         mapboxApiAccessToken={MapboxAccessToken}>
         {this.addOverlay(this.props.buoys)}
+        {this.addPopup(this.state.isHowToOpen)}
       </ReactMapGL>
     );
   }
