@@ -1,9 +1,27 @@
 .buoy-map {
   display: flex;
-  flex-flow: row;
+  flex-flow: column;
 }
 
-.dev-controls {
+.map-controls {
+  display: flex;
+  flex-flow: row;
+  width: 600px;
+  justify-content: flex-start;
+  margin-top: 1em;
+}
+
+.map-controls-col {
   display: flex;
   flex-flow: column;
+  justify-content: flex-start;
+  margin-right: 10px;
+}
+
+.latlon-input {
+  width: 12em;
+}
+
+.bound-subscribe {
+  width: 12em;
 }
