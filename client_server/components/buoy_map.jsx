@@ -58,7 +58,7 @@ class BuoyMap extends React.Component {
       south: Math.min(startCorner[1], endCorner[1]),
       east: Math.max(startCorner[0], endCorner[0]),
       north: Math.max(startCorner[1], endCorner[1]),
-    });
+    }, () => this.subscribeToBuoys());
   }
 
   render() {
