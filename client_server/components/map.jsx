@@ -51,10 +51,8 @@ class Map extends React.Component {
   }
 
   addOverlay(buoys, startCorner, endCorner) {
-    const childNodes = [];
-
     if (Object.keys(buoys).length > 0) {
-      childNodes.push(
+      return (
         <BuoyOverlay
           id='buoys'
           buoys={buoys}
@@ -69,8 +67,6 @@ class Map extends React.Component {
         />
       );
     }
-
-    return childNodes;
   }
 
   addPopup(isHowToOpen) {
