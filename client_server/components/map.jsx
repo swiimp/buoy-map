@@ -28,7 +28,9 @@ class Map extends React.Component {
   }
 
   componentDidMount() {
-    this.props.setBounds(this.mapRef.getMap().getBounds());
+    if (this.mapRef) {
+      this.props.setBounds(this.mapRef.getMap().getBounds());
+    }
     window.addEventListener('resize', this.resize);
     this.resize();
   }
