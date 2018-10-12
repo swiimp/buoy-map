@@ -5,7 +5,10 @@
   "main": "ws_server/index.js",
   "scripts": {
     "test": "jest --coverage",
-    "build": "webpack -d"
+    "build:dev": "webpack -d",
+    "build:prod": "webpack -p",
+    "server:ws": "node ws_server/index.js",
+    "server:client": "node client_server/index.js"
   },
   "author": "Robin Markowitz",
   "license": "ISC",
