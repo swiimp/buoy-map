@@ -31,7 +31,12 @@ server.on('connection', (ws) => {
           buoyManager[request.method](request.params, (res) => {
             if (res) {
               if (res.error) {
-                ws.send(res.error);
+                const response = {
+                  jsonrpc: '2.0',
+                  error: res.error,
+                  id: request.id,
+                };
+                ws.send(JSON.stringify(response));
               } else {
                 ws.send(`{"jsonrpc":"2.0","result":"ok","id":"${request.id}"}`);
               }
