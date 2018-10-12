@@ -15,9 +15,16 @@ class Map extends React.Component {
       longitude: -120.783,
       zoom: 8,
       mousePos: null,
-      isHowToOpen: true,
+      isHowToOpen: true, // is the little instruction window open
     };
 
+    // name: updateSubscription
+    // description: Attempts to update subscription once the viewport has been still for a moment.
+    //
+    // params:
+    //   none
+    //
+    // returns: nothing
     this.updateSubscription = debounce(() =>
       this.props.setBounds(this.mapRef.getMap().getBounds()), 500).bind(this);
 
@@ -28,6 +35,7 @@ class Map extends React.Component {
   }
 
   componentDidMount() {
+    // initializes subscription and resizes map to fit window
     if (this.mapRef) {
       this.props.setBounds(this.mapRef.getMap().getBounds());
     }
@@ -39,10 +47,24 @@ class Map extends React.Component {
     window.removeEventListener('resize', this.resize);
   }
 
+  // name: handleHover
+  // description: Tracks mouse cursor position while it's hovering over the map.
+  //
+  // params:
+  //   'e' -- Object; event object containing the cursor's current coordinates
+  //
+  // returns: nothing
   handleHover(e) {
     this.setState({ mousePos: e.lngLat });
   }
 
+  // name: resize
+  // description: Resizes the map to fill the window, defaults to 600px by 400px.
+  //
+  // params:
+  //   none
+  //
+  // returns: nothing
   resize() {
     this.setState({
       width: window.innerWidth || 600,
@@ -50,7 +72,14 @@ class Map extends React.Component {
     });
   }
 
-  addOverlay(buoys, startCorner, endCorner) {
+  // name: addOverlay
+  // description: Adds a BuoyOverlay if there are buoys in the current subscription.
+  //
+  // params:
+  //   'buoys' -- Object; the buoys to be rendered
+  //
+  // returns: BuoyOverlay; a BuoyOverlay containing the subscribed buoys
+  addOverlay(buoys) {
     if (Object.keys(buoys).length > 0) {
       return (
         <BuoyOverlay
@@ -58,6 +87,7 @@ class Map extends React.Component {
           buoys={buoys}
           radius={10}
           isMouseOver={(center, radius, project) => {
+            // uses distance formula to check if a specific buoy is being moused over
             if (this.state.mousePos) {
               const mousePosPx = project(this.state.mousePos);
               return Math.hypot(center[0] - mousePosPx[0], center[1] - mousePosPx[1]) <= radius;
@@ -69,13 +99,20 @@ class Map extends React.Component {
     }
   }
 
+  // name: addPopup
+  // description: Adds a Popup containing instructions if it has not been closed.
+  //
+  // params:
+  //   'isHowToOpen' -- Bool; true if the instruction Popup has not been closed, otherwise false
+  //
+  // returns: Popup; a Popup containing instructions for the map
   addPopup(isHowToOpen) {
     if (isHowToOpen) {
       return (
         <Popup
           latitude={this.state.latitude}
           longitude={this.state.longitude}
-          tipSize={0}
+          tipSize={0} // set to 0 for a plain rectangle
           onClose={() => this.setState({ isHowToOpen: false })}
           >
           <p>
