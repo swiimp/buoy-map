@@ -6,6 +6,10 @@ module.exports = {
     'enzyme-to-json/serializer',
   ],
   moduleNameMapper: {
-    'canvas-overlay.js': '<rootDir>/__mocks__/canvas-overlay.js',
+    'canvas-overlay.js': '<rootDir>/test/empty_module.js',
+    'mapbox-gl.css': '<rootDir>/test/empty.css',
+  },
+  globals: {
+      MapboxAccessToken: '',
   },
 };
