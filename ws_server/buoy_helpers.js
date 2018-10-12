@@ -181,4 +181,4 @@ class BuoyHelpers {
   }
 }
 
-export default BuoyHelpers;
+module.exports = BuoyHelpers;
