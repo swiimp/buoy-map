@@ -155,7 +155,7 @@ class Map extends React.Component {
           }, this.updateSubscription)
         }
         onHover={this.handleHover}
-        mapboxApiAccessToken={MapboxAccessToken}> // environment var baked in with Webpack
+        mapboxApiAccessToken={MapboxAccessToken}>
         {this.addOverlay(this.props.buoys)}
         {this.addPopup(this.state.isHowToOpen)}
       </ReactMapGL>
