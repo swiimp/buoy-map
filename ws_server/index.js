@@ -6,6 +6,15 @@ const server = new WebSocket.Server({
   port: process.env.WS_PORT || 8080,
 });
 
+// name: validateId
+// description: Validates the given id against the json-rcp 2.0 specification. An id must be either
+//              a string or non-fractional number unless there is a valid reason to also accept
+//              fractional numbers or null.
+//
+// params:
+//   'id' -- Any; the id from the parsed json-rcp 2.0 request
+//
+// returns: Bool; true if id is valid, otherwise false
 const validateId = (id) => typeof id === 'string' || (typeof id === 'number' && id % 1 === 0);
 
 server.on('connection', (ws) => {
@@ -13,6 +22,7 @@ server.on('connection', (ws) => {
     try {
       const request = JSON.parse(data);
 
+      // validate request version and id
       if (request.jsonrpc !== '2.0' || !validateId(request.id)) {
         const response = {
           jsonrpc: '2.0',
@@ -24,9 +34,11 @@ server.on('connection', (ws) => {
         };
         ws.send(JSON.stringify(response));
       } else {
+        // store id on websocket for termination on close
         if (!ws.id) {
           ws.clientId = request.clientId;
         }
+        // attempt to call method then send proper response
         if (buoyManager[request.method]) {
           buoyManager[request.method](request.params, (res) => {
             if (res) {
