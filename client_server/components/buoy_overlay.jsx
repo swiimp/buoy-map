@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import CanvasOverlay from 'react-map-gl/src/overlays/canvas-overlay.js';
 
@@ -101,5 +102,15 @@ class BuoyOverlay extends React.Component {
     );
   }
 }
+
+BuoyOverlay.propTypes = {
+  buoys: PropTypes.object.isRequired,
+  radius: PropTypes.number,
+  isMouseOver: PropTypes.func,
+};
+
+BuoyOverlay.defaultProps = {
+  radius: 10,
+};
 
 export default BuoyOverlay;

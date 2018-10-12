@@ -56,6 +56,7 @@ exports[`Map should render correctly 1`] = `
   width={1024}
   zoom={8}
 >
+   // environment var baked in with Webpack
   <Popup
     anchor="bottom"
     captureClick={true}
@@ -145,6 +146,7 @@ exports[`Map should render overlay when subbed to buoys 1`] = `
   width={1024}
   zoom={8}
 >
+   // environment var baked in with Webpack
   <BuoyOverlay
     buoys={
       Object {

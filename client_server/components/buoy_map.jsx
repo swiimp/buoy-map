@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import io from 'socket.io-client';
 
 import Map from './map.jsx';
@@ -107,6 +108,16 @@ class BuoyMap extends React.Component {
       </div>
     );
   }
+}
+
+BuoyMap.propTypes = {
+  lonPrecache: PropTypes.number,
+  latPrecache: PropTypes.number,
+};
+
+BuoyMap.defaultProps = {
+  lonPrecache: 0,
+  latPrecache: 0,
 }
 
 export default BuoyMap;

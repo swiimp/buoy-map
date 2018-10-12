@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactMapGL, {Popup} from 'react-map-gl';
+import PropTypes from 'prop-types';
 import debounce from 'lodash/debounce';
 
 import BuoyOverlay from './buoy_overlay.jsx'
@@ -161,5 +162,10 @@ class Map extends React.Component {
     );
   }
 }
+
+Map.propTypes = {
+  buoys: PropTypes.object.isRequired,
+  setBounds: PropTypes.func.isRequired,
+};
 
 export default Map;
