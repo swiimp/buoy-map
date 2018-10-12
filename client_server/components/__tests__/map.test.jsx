@@ -70,6 +70,15 @@ describe('Map', () => {
       />
     );
     const reactMap = map.find(ReactMapGL);
+    const expectedState = {
+      width: 30,
+      height: 31,
+      latitude: 32,
+      longitude: 33,
+      zoom: 34,
+      mousePos: null,
+      isHowToOpen: true,
+    };
 
     reactMap.simulate('viewportChange', {
       width: 30,
@@ -78,14 +87,6 @@ describe('Map', () => {
       longitude: 33,
       zoom: 34,
     });
-    expect(map.state()).toEqual({
-      width: 30,
-      height: 31,
-      latitude: 32,
-      longitude: 33,
-      zoom: 34,
-      mousePos: null,
-      isHowToOpen: true,
-    });
+    expect(map.state()).toEqual(expectedState);
   });
 });
