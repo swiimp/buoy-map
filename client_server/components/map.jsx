@@ -5,6 +5,13 @@ import debounce from 'lodash/debounce';
 import BuoyOverlay from './buoy_overlay.jsx'
 import 'mapbox-gl/dist/mapbox-gl.css';
 
+// name: Map
+// description: A component that renders a ReactMapGL and any applicable overlays or popups.
+//
+// props:
+//   'buoys' -- Object; a table of buoys to which the client is subscribed
+//   'setBounds' -- Function; called when the viewport changes, args: MapboxGL LngLatBounds for the
+//                  current viewport
 class Map extends React.Component {
   constructor(props) {
     super(props);
@@ -130,7 +137,7 @@ class Map extends React.Component {
   render() {
     return (
       <ReactMapGL
-        ref={(map) => this.mapRef = map}
+        ref={(map) => this.mapRef = map} // reference to the MapboxGL Map object
         width={this.state.width}
         height={this.state.height}
         latitude={this.state.latitude}
@@ -147,7 +154,7 @@ class Map extends React.Component {
           }, this.updateSubscription)
         }
         onHover={this.handleHover}
-        mapboxApiAccessToken={MapboxAccessToken}>
+        mapboxApiAccessToken={MapboxAccessToken}> // environment var baked in with Webpack
         {this.addOverlay(this.props.buoys)}
         {this.addPopup(this.state.isHowToOpen)}
       </ReactMapGL>
