@@ -4,6 +4,24 @@ class BuoyHelpers {
     this._clients = {};
     this._latIndex = [];
     this._lonIndex = [];
+    this._paramTypes = {
+      addBuoy: {
+        name: 'string',
+        lat: 'number',
+        lon: 'number',
+      },
+      updateBuoyData: {
+        name: 'string',
+        height: 'number',
+        period: 'number',
+      },
+      subscribeToBuoys: {
+        south: 'number',
+        west: 'number',
+        north: 'number',
+        east: 'number',
+      }
+    }
   }
 
   addBuoy(params, cb) {
@@ -12,7 +30,12 @@ class BuoyHelpers {
       notifications: [],
     };
 
-    if (this._buoys[params.name] === undefined) {
+    if (!this._validateParams('addBuoy', params)) {
+      payload.error = {
+        code: -32602,
+        message: 'Invalid params',
+      };
+    } else if (this._buoys[params.name] === undefined) {
       this._buoys[params.name] = {
         lat: params.lat,
         lon: params.lon,
@@ -45,7 +68,7 @@ class BuoyHelpers {
         }
       }
     }
-    cb();
+    cb(payload);
   }
 
   updateBuoyData(params, cb) {
@@ -54,9 +77,14 @@ class BuoyHelpers {
       notifications: [],
     };
 
-    if (this._buoys[params.name] &&
-        (this._buoys[params.name].height !== params.height ||
-         this._buoys[params.name].period !== params.period)) {
+    if (!this._validateParams('updateBuoyData', params)) {
+      payload.error = {
+        code: -32602,
+        message: 'Invalid params',
+      };
+    } else if (this._buoys[params.name] &&
+              (this._buoys[params.name].height !== params.height ||
+                this._buoys[params.name].period !== params.period)) {
       this._buoys[params.name].height = params.height;
       this._buoys[params.name].period = params.period;
       payload.notifications.push({
@@ -80,46 +108,54 @@ class BuoyHelpers {
     };
     const isWithinBounds = (buoy) => buoy.lat > params.south && buoy.lat < params.north &&
                                       buoy.lon > params.west && buoy.lon < params.east;
-    if (this._latIndex.length > 0) {
-      if (this._clients[client]) {
-        for (let buoy in this._clients[client].buoys) {
-          if (isWithinBounds(this._buoys[buoy])) {
-            results[buoy] = buoy;
-          } else {
-            delete this._buoys[buoy].clients[client];
+
+    if (!this._validateParams('subscribeToBuoys', params)) {
+      payload.error = {
+        code: -32602,
+        message: 'Invalid params',
+      };
+    } else {
+      if (this._latIndex.length > 0) {
+        if (this._clients[client]) {
+          for (let buoy in this._clients[client].buoys) {
+            if (isWithinBounds(this._buoys[buoy])) {
+              results[buoy] = buoy;
+            } else {
+              delete this._buoys[buoy].clients[client];
+            }
           }
         }
-      }
-      let iLat = this._findIndex(params.south, 'lat');
-      let iLon = this._findIndex(params.west, 'lon');
-      while (iLat < this._latIndex.length && iLon < this._lonIndex.length &&
-              this._latIndex[iLat].lat < params.north && this._lonIndex[iLon].lon < params.east) {
-        if (results[this._latIndex[iLat].name] === undefined && isWithinBounds(this._latIndex[iLat])) {
-          results[this._latIndex[iLat].name] = this._latIndex[iLat].name;
-          this._buoys[this._latIndex[iLat].name].clients[client] = client;
-          payload.notifications.push({
-            body: this._generateNotification(this._latIndex[iLat].name),
-            clients: [ws],
-          });
+        let iLat = this._findIndex(params.south, 'lat');
+        let iLon = this._findIndex(params.west, 'lon');
+        while (iLat < this._latIndex.length && iLon < this._lonIndex.length &&
+          this._latIndex[iLat].lat < params.north && this._lonIndex[iLon].lon < params.east) {
+          if (results[this._latIndex[iLat].name] === undefined && isWithinBounds(this._latIndex[iLat])) {
+            results[this._latIndex[iLat].name] = this._latIndex[iLat].name;
+            this._buoys[this._latIndex[iLat].name].clients[client] = client;
+            payload.notifications.push({
+              body: this._generateNotification(this._latIndex[iLat].name),
+              clients: [ws],
+            });
+          }
+          if (results[this._lonIndex[iLon].name] === undefined && isWithinBounds(this._lonIndex[iLon])) {
+            results[this._lonIndex[iLon].name] = this._lonIndex[iLon].name;
+            this._buoys[this._lonIndex[iLon].name].clients[client] = client;
+            payload.notifications.push({
+              body: this._generateNotification(this._lonIndex[iLon].name),
+              clients: [ws],
+            });
+          }
+          iLat += 1;
+          iLon += 1;
         }
-        if (results[this._lonIndex[iLon].name] === undefined && isWithinBounds(this._lonIndex[iLon])) {
-          results[this._lonIndex[iLon].name] = this._lonIndex[iLon].name;
-          this._buoys[this._lonIndex[iLon].name].clients[client] = client;
-          payload.notifications.push({
-            body: this._generateNotification(this._lonIndex[iLon].name),
-            clients: [ws],
-          });
-        }
-        iLat += 1;
-        iLon += 1;
       }
-    }
 
-    this._clients[client] = {
-      buoys: results,
-      bounds: params,
-      ws: ws,
-    };
+      this._clients[client] = {
+        buoys: results,
+        bounds: params,
+        ws: ws,
+      };
+    }
 
     cb(payload);
   }
@@ -178,6 +214,15 @@ class BuoyHelpers {
     };
 
     return JSON.stringify(notification);
+  }
+
+  _validateParams(method, params) {
+    for (let param in this._paramTypes[method]) {
+      if (typeof params[param] !== this._paramTypes[method][param]) {
+        return false;
+      }
+    }
+    return true;
   }
 }
 

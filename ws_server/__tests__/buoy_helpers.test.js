@@ -2,6 +2,21 @@ import BuoyHelpers from '../buoy_helpers.js';
 
 describe('buoyHelpers', () => {
   describe('addBuoy', () => {
+    test('should validate params', () => {
+      const buoyHelpers = new BuoyHelpers();
+      const expectedRes = {
+        error: {
+          code: -32602,
+          message: 'Invalid params',
+        },
+        notifications: [],
+      };
+
+      buoyHelpers.addBuoy({}, (res) => {
+        expect(res).toEqual(expectedRes);
+      });
+    });
+
     test('should add a new entry for new buoys', () => {
       const buoyHelpers = new BuoyHelpers();
       const params = {
@@ -152,6 +167,21 @@ describe('buoyHelpers', () => {
   });
 
   describe('updateBuoyData', () => {
+    test('should validate params', () => {
+      const buoyHelpers = new BuoyHelpers();
+      const expectedRes = {
+        error: {
+          code: -32602,
+          message: 'Invalid params',
+        },
+        notifications: [],
+      };
+
+      buoyHelpers.updateBuoyData({}, (res) => {
+        expect(res).toEqual(expectedRes);
+      });
+    });
+
     test('should update the target buoy with the given data', () => {
       const buoyHelpers = new BuoyHelpers();
       const params_1 = {
@@ -203,6 +233,29 @@ describe('buoyHelpers', () => {
       lat: -10,
       lon: 100,
     };
+
+    test('should validate params', () => {
+      const buoyHelpers = new BuoyHelpers();
+      const expectedRes = {
+        error: {
+          code: -32602,
+          message: 'Invalid params',
+        },
+        notifications: [],
+      };
+
+      buoyHelpers.addBuoy(test_param_1, () => {
+        buoyHelpers.addBuoy(test_param_2, () => {
+          buoyHelpers.addBuoy(test_param_3, () => {
+            buoyHelpers.addBuoy(test_param_4, () => {
+              buoyHelpers.subscribeToBuoys({}, (res) => {
+                expect(res).toEqual(expectedRes);
+              }, 'client_0');
+            });
+          });
+        });
+      });
+    });
 
     test('should add a new entry for new subscriptions', () => {
       const buoyHelpers = new BuoyHelpers();
