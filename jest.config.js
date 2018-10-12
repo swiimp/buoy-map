@@ -7,7 +7,7 @@ module.exports = {
   ],
   moduleNameMapper: {
     'canvas-overlay.js': '<rootDir>/test/empty_module.js',
-    'socket.io-client': '<rootDir/test/socket.io-client.js',
+    'socket.io-client': '<rootDir>/test/socket.io-client.js',
     'mapbox-gl.css': '<rootDir>/test/empty.css',
     'main.css': '<rootDir>/test/empty.css',
   },
