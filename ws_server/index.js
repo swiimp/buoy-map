@@ -1,6 +1,7 @@
 const WebSocket = require('ws');
 const BuoyHelpers = require('./buoy_helpers.js');
 
+const buoyManager = new BuoyHelpers();
 const server = new WebSocket.Server({
   port: process.env.WS_PORT || 8080,
 });
@@ -11,8 +12,8 @@ server.on('connection', (ws) => {
     if (!ws.id) {
       ws.clientId = request.clientId;
     }
-    if(BuoyHelpers[request.method]) {
-      BuoyHelpers[request.method](request.params, (res) => {
+    if(buoyManager[request.method]) {
+      buoyManager[request.method](request.params, (res) => {
         if (res) {
           if (res.error) {
             ws.send(res.error);
@@ -31,6 +32,6 @@ server.on('connection', (ws) => {
     }});
   ws.on('close', (code, message) => {
     console.log('WebSocket closed:', ws.clientId, code, message);
-    BuoyHelpers.terminateClient(ws.clientId);
+    buoyManager.terminateClient(ws.clientId);
   });
 });
