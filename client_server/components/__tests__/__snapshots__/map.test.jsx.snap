@@ -1,0 +1,195 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Map should render correctly 1`] = `
+<InteractiveMap
+  altitude={1.5}
+  attributionControl={true}
+  bearing={0}
+  clickRadius={0}
+  doubleClickZoom={true}
+  dragPan={true}
+  dragRotate={true}
+  getCursor={[Function]}
+  height={768}
+  latitude={34.454}
+  longitude={-120.783}
+  mapOptions={Object {}}
+  mapStyle="mapbox://styles/mapbox/light-v8"
+  mapboxApiAccessToken=""
+  maxPitch={60}
+  maxZoom={20}
+  minPitch={0}
+  minZoom={0}
+  onClick={null}
+  onContextMenu={[Function]}
+  onError={[Function]}
+  onHover={[Function]}
+  onLoad={[Function]}
+  onTransitionEnd={[Function]}
+  onTransitionInterrupt={[Function]}
+  onTransitionStart={[Function]}
+  onViewStateChange={null}
+  onViewportChange={[Function]}
+  pitch={0}
+  preserveDrawingBuffer={false}
+  preventStyleDiffing={false}
+  reuseMap={false}
+  reuseMaps={false}
+  scrollZoom={true}
+  touchAction="none"
+  transformRequest={null}
+  transitionDuration={0}
+  transitionEasing={[Function]}
+  transitionInterpolator={
+    LinearInterpolator {
+      "propNames": Array [
+        "longitude",
+        "latitude",
+        "zoom",
+        "bearing",
+        "pitch",
+      ],
+    }
+  }
+  transitionInterruption={1}
+  visible={true}
+  width={1024}
+  zoom={8}
+>
+  <Popup
+    anchor="bottom"
+    captureClick={true}
+    captureDoubleClick={true}
+    captureDrag={true}
+    captureScroll={false}
+    className=""
+    closeButton={true}
+    closeOnClick={true}
+    dynamicPosition={true}
+    latitude={34.454}
+    longitude={-120.783}
+    offsetLeft={0}
+    offsetTop={0}
+    onClose={[Function]}
+    tipSize={0}
+  >
+    <p>
+      Basic Controls:
+      <br />
+      Left-click + drag: Pan viewport
+      <br />
+      Scroll up/down: Zoom in/out
+      <br />
+      <br />
+      Hover over points to get more info.
+      <br />
+      (Click dialog to close)
+    </p>
+  </Popup>
+</InteractiveMap>
+`;
+
+exports[`Map should render overlay when subbed to buoys 1`] = `
+<InteractiveMap
+  altitude={1.5}
+  attributionControl={true}
+  bearing={0}
+  clickRadius={0}
+  doubleClickZoom={true}
+  dragPan={true}
+  dragRotate={true}
+  getCursor={[Function]}
+  height={768}
+  latitude={34.454}
+  longitude={-120.783}
+  mapOptions={Object {}}
+  mapStyle="mapbox://styles/mapbox/light-v8"
+  mapboxApiAccessToken=""
+  maxPitch={60}
+  maxZoom={20}
+  minPitch={0}
+  minZoom={0}
+  onClick={null}
+  onContextMenu={[Function]}
+  onError={[Function]}
+  onHover={[Function]}
+  onLoad={[Function]}
+  onTransitionEnd={[Function]}
+  onTransitionInterrupt={[Function]}
+  onTransitionStart={[Function]}
+  onViewStateChange={null}
+  onViewportChange={[Function]}
+  pitch={0}
+  preserveDrawingBuffer={false}
+  preventStyleDiffing={false}
+  reuseMap={false}
+  reuseMaps={false}
+  scrollZoom={true}
+  touchAction="none"
+  transformRequest={null}
+  transitionDuration={0}
+  transitionEasing={[Function]}
+  transitionInterpolator={
+    LinearInterpolator {
+      "propNames": Array [
+        "longitude",
+        "latitude",
+        "zoom",
+        "bearing",
+        "pitch",
+      ],
+    }
+  }
+  transitionInterruption={1}
+  visible={true}
+  width={1024}
+  zoom={8}
+>
+  <BuoyOverlay
+    buoys={
+      Object {
+        "jest_buoy_0": Object {
+          "height": 3,
+          "lat": 42,
+          "lon": -42,
+          "name": "jest_buoy_0",
+          "period": 3,
+        },
+      }
+    }
+    id="buoys"
+    isMouseOver={[Function]}
+    radius={10}
+  />
+  <Popup
+    anchor="bottom"
+    captureClick={true}
+    captureDoubleClick={true}
+    captureDrag={true}
+    captureScroll={false}
+    className=""
+    closeButton={true}
+    closeOnClick={true}
+    dynamicPosition={true}
+    latitude={34.454}
+    longitude={-120.783}
+    offsetLeft={0}
+    offsetTop={0}
+    onClose={[Function]}
+    tipSize={0}
+  >
+    <p>
+      Basic Controls:
+      <br />
+      Left-click + drag: Pan viewport
+      <br />
+      Scroll up/down: Zoom in/out
+      <br />
+      <br />
+      Hover over points to get more info.
+      <br />
+      (Click dialog to close)
+    </p>
+  </Popup>
+</InteractiveMap>
+`;
