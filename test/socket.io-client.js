@@ -2,12 +2,12 @@ const io = () => {
   const mockIO = {};
   mockIO.events = {};
   mockIO.on = (eventName, cb) => {
-    this.events[event] = cb;
+    mockIO.events[eventName] = cb;
   };
-  mockIO.trigger = (eventName, args) => {
-    this.events[eventName].apply(null, args);
+  mockIO.triggerNotification = (paramStr) => {
+    mockIO.events['notification'](paramStr);
   };
-  mockIO.send = jest.fn();
+  mockIO.send = jest.fn().mockName('io.send');
   return mockIO;
 };
 
