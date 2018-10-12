@@ -7,5 +7,6 @@ const io = () => {
     trigger: (eventName, args) => {
       this.events[eventName].apply(null, args);
     },
+    send: jest.fn(),
   };
 };
