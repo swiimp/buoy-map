@@ -31,10 +31,10 @@ class BuoyMap extends React.Component {
       jsonrpc: '2.0',
       method: 'subscribeToBuoys',
       params: {
-        west: parseFloat(this.state.west),
-        south: parseFloat(this.state.south),
-        east: parseFloat(this.state.east),
-        north: parseFloat(this.state.north),
+        west: this.state.west,
+        south: this.state.south,
+        east: this.state.east,
+        north: this.state.north,
       },
     };
     this.socket.send(JSON.stringify(rpc));
@@ -61,7 +61,7 @@ class BuoyMap extends React.Component {
         west: bounds.getWest() - this.props.lonPrecache,
         south: bounds.getSouth() - this.props.latPrecache,
         east: bounds.getEast() + this.props.lonPrecache,
-        north: bounds.getNorth() + this.props.lonPrecache,
+        north: bounds.getNorth() + this.props.latPrecache,
       }, () => this.subscribeToBuoys());
     }
   }
