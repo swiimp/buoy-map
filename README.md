@@ -32,9 +32,6 @@ You may also specify `APP_PORT` and/or `WS_PORT` here to change which ports the 
 servers use and `WS_HOST` to set the host address of the websocket server to which the app server
 will attempt to connect. All three of these fields, however, are optional.
 
-Note: For your convenience, I've already included a `.env` file with the Mapbox access token I used
-during development (please be gentle).
-
 Next, run this command from the root directory to build the application Webpack bundle:
 
 ```sh
